@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Notes – AdaptIQ</title>
+    <link rel="stylesheet" href="notes.css?v=1.0.2">
+    <!-- Instant session-check protect -->
+    <script>
+        if (localStorage.getItem('firebase_user_active') !== 'true') {
+            window.location.replace('Login.html');
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Background -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="indexx.html" class="nav-logo">
+            <span class="logo-icon">⬡</span>
+            <span>Adapt<span class="logo-accent">IQ</span></span>
+        </a>
+        <div class="nav-right">
+            <!-- Using history.back() provides dynamic return to whichever semester page user came from -->
+            <button class="nav-back" onclick="history.back()">← Back</button>
+        </div>
+    </nav>
+
+    <!-- Page -->
+    <div class="page">
+        <div class="notes-header">
+            <h1 class="subject-title">
+                <span class="highlight" id="subject-name-display">Loading...</span> Notes
+            </h1>
+            <p class="subtitle">Access and download study materials for this subject below.</p>
+        </div>
+
+        <div class="notes-container">
+            <div id="loader" class="loader">Fetching notes from the database...</div>
+            <div id="notes-grid" class="notes-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        let BASE_URL = 'https://adaptiq-backend.onrender.com';
+
+        const backendDetectionPromise = (async () => {
+            if (window.location.protocol === 'https:') {
+                console.log('ℹ️ Running on HTTPS. Bypassing local HTTP backend check to prevent Mixed Content blocking.');
+                return;
+            }
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 1200); // 1.2s timeout
+                const res = await fetch('http://localhost:5000/api/status', { signal: controller.signal });
+                clearTimeout(timeoutId);
+                const data = await res.json();
+                if (data.server === 'online') {
+                    BASE_URL = 'http://localhost:5000';
+                    console.log('✅ Auto-detected local backend server on port 5000');
+                }
+            } catch (err) {
+                console.log('ℹ️ Local backend not detected. Defaulting to production Render backend.');
+            }
+        })();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await backendDetectionPromise;
+            const urlParams = new URLSearchParams(window.location.search);
+            const subject = urlParams.get('subject');
+            const displayEl = document.getElementById('subject-name-display');
+            const loader = document.getElementById('loader');
+            const notesGrid = document.getElementById('notes-grid');
+
+            if (!subject) {
+                displayEl.innerText = "Unknown Subject";
+                loader.style.display = 'none';
+                notesGrid.innerHTML = '<div class="empty-state">No subject specified in the URL.</div>';
+                return;
+            }
+
+            displayEl.innerText = subject;
+
+            try {
+                // Fetch from backend
+                const response = await fetch(`${BASE_URL}/api/notes/${encodeURIComponent(subject)}`);
+                const notes = await response.json();
+
+                loader.style.display = 'none';
+
+                if (!notes || notes.length === 0) {
+                    notesGrid.innerHTML = '<div class="empty-state">No notes available for this subject yet.<br>Go to Admin Dashboard to upload materials.</div>';
+                    return;
+                }
+
+                // Render notes
+                notesGrid.innerHTML = notes.map(note => {
+                    const dateStr = new Date(note.uploadedAt).toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'short', day: 'numeric'
+                    });
+                    
+                    // Determine icon based on file type
+                    let icon = '📄';
+                    if (note.fileType === 'pdf') icon = '📕';
+                    else if (note.fileType.includes('doc')) icon = '📘';
+                    else if (note.fileType.includes('ppt')) icon = '📙';
+                    else if (note.fileType.includes('xls')) icon = '📗';
+
+                    const fileUrl = note.filePath.startsWith('http') ? note.filePath : `${BASE_URL}${note.filePath}`;
+
+                    return `
+                        <a href="${fileUrl}" target="_blank" class="note-card">
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                <div class="note-icon">${icon}</div>
+                                <div class="note-info">
+                                    <div class="note-name">${note.fileName}</div>
+                                    <div class="note-date">Uploaded on ${dateStr}</div>
+                                </div>
+                            </div>
+                            <div class="btn-download">View / Download</div>
+                        </a>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error("Error fetching notes:", error);
+                loader.style.display = 'none';
+                notesGrid.innerHTML = '<div class="empty-state" style="color:var(--coral);">Failed to connect to the database. Is the backend running?</div>';
+            }
+        });
+    </script>
+</body>
+</html>

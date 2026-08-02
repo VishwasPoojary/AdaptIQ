@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdaptIQ – AI-Powered Adaptive Learning</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css?v=1.0.2" />
+  <!-- Instant session-check redirect -->
+  <script>
+    if (localStorage.getItem('firebase_user_active') === 'true') {
+      window.location.replace('indexx.html');
+    }
+  </script>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════
+       NAVBAR
+       ═══════════════════════════════════ -->
+  <nav class="navbar">
+    <div class="nav-container">
+
+      <!-- Logo -->
+      <div class="nav-logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">Adapt<span class="logo-accent">IQ</span></span>
+      </div>
+
+      <!-- Nav Links -->
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+      </ul>
+
+      <!-- Login Button -->
+      <a href="Login.html" class="btn-start" style="padding: 0.5rem 1.5rem; margin-left: auto;">Log In</a>
+
+      <!-- Mobile Toggle -->
+      <button class="nav-toggle" id="navToggle">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════
+       HERO SECTION
+       ═══════════════════════════════════ -->
+  <section class="hero" id="home">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="hero-container hero-centered">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          AI-Powered Adaptive Learning
+        </div>
+        <h1 class="hero-title">
+          The Future of Learning is<br />
+          <span class="title-highlight">Adaptive</span>
+        </h1>
+        <p class="hero-sub">
+          Welcome to AdaptIQ, the intelligent platform that understands how <em>you</em> learn. We dynamically adjust
+          content, pace, and difficulty in real time to help you achieve your best results.
+        </p>
+
+        <div class="hero-cta-wrap">
+          <a href="Login.html" class="btn-start hero-btn-start">
+            Get Started <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       FEATURES SECTION
+       ═══════════════════════════════════ -->
+  <section class="features" id="features">
+    <div class="features-container">
+      <div class="section-label">Why AdaptIQ?</div>
+      <h2 class="section-title">Discover the <span class="title-highlight">Difference</span></h2>
+      <p class="section-sub">Experience a seamless, intelligent learning environment designed specifically around your
+        unique needs and goals.</p>
+      <div class="features-grid">
+
+        <!-- Feature 1 -->
+        <div class="feature-card fc-purple" onclick="window.location.href='Login.html'" style="cursor: pointer;">
+          <div class="fc-top">
+            <div class="fc-emoji">📚</div>
+            <div class="fc-tag">Notes</div>
+          </div>
+          <h3>Notes Database</h3>
+          <p>Access and download premium study materials organized systematically by Course and Semester for BCA, BBA, and BCom.</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-card fc-coral" onclick="window.location.href='Login.html'" style="cursor: pointer;">
+          <div class="fc-top">
+            <div class="fc-emoji">🧠</div>
+            <div class="fc-tag">AI Quiz</div>
+          </div>
+          <h3>AI Quiz Generator</h3>
+          <p>Upload any study note (.pdf, .docx, or .txt) to dynamically generate custom 20-question multiple-choice quizzes using Gemini AI.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-card fc-teal" onclick="window.location.href='Login.html'" style="cursor: pointer;">
+          <div class="fc-top">
+            <div class="fc-emoji">☁️</div>
+            <div class="fc-tag">Secure</div>
+          </div>
+          <h3>Cloud File Storage</h3>
+          <p>All study guides are securely backed up in the cloud on optimized content delivery networks (Cloudinary) for instant downloads.</p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature-card fc-gold" onclick="window.location.href='Login.html'" style="cursor: pointer;">
+          <div class="fc-top">
+            <div class="fc-emoji">🔑</div>
+            <div class="fc-tag">Control</div>
+          </div>
+          <h3>Admin Dashboard</h3>
+          <p>Educators can log in securely to instantly upload study notes, manage the catalog, and sort files by Course and Semester.</p>
+        </div>
+
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       SCRIPTS
+       ═══════════════════════════════════ -->
+  <script>
+    /* ── Mobile nav toggle ── */
+    const toggle = document.getElementById('navToggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (toggle && navLinks) {
+      toggle.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+      });
+    }
+
+    /* ── Navbar scroll effect ── */
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      if (navbar) {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+      }
+    });
+
+    /* ── Scroll-reveal animations ── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.feature-card, .hero-content').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCOvhichhN6LqA1w8ZNg9bwdHrRRKyiWxE",
+      authDomain: "adaptiq-64d2d.firebaseapp.com",
+      projectId: "adaptiq-64d2d",
+      storageBucket: "adaptiq-64d2d.firebasestorage.app",
+      messagingSenderId: "1005881754058",
+      appId: "1:1005881754058:web:40f5677d68f6139ff6cf33",
+      measurementId: "G-SB1EFL5982"
+    };
+    firebase.initializeApp(firebaseConfig);
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        localStorage.setItem('firebase_user_active', 'true');
+        window.location.replace('indexx.html');
+      }
+    });
+  </script>
+
+</body>
+
+</html>

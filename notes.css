@@ -1,0 +1,335 @@
+/* =============================================
+   ADAPTIQ — PREMIUM STUDY NOTES STYLESHEET
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+/* ── TOKENS ── */
+:root {
+    --purple:       #6C63FF;
+    --purple-light: #ede9ff;
+    --coral:        #FF6584;
+    --coral-light:  #ffe8ed;
+    --teal:         #00C9A7;
+    --dark:         #1a1a2e;
+    --gray:         #6b7280;
+    --white:        #ffffff;
+    --border:       rgba(108,99,255,0.12);
+    --shadow-sm:    0 2px 12px rgba(108,99,255,0.08);
+    --shadow-md:    0 8px 32px rgba(108,99,255,0.14);
+    --radius:       16px;
+    --radius-sm:    8px;
+    --font-display: 'Syne', sans-serif;
+    --font-body:    'DM Sans', sans-serif;
+    --transition:   0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
+
+html { 
+    scroll-behavior: smooth; 
+}
+
+body {
+    font-family: var(--font-body);
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fdfcff 0%, #f0edff 50%, #fff5f7 100%);
+    color: var(--dark);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+a { 
+    text-decoration: none; 
+    color: inherit; 
+}
+
+/* ── BACKGROUND BLOBS ── */
+.bg-shapes { 
+    position: fixed; 
+    inset: 0; 
+    pointer-events: none; 
+    z-index: 0; 
+}
+
+.shape { 
+    position: absolute; 
+    border-radius: 50%; 
+    filter: blur(80px); 
+    opacity: 0.35; 
+}
+
+.shape-1 {
+    width: 500px; 
+    height: 500px;
+    background: radial-gradient(circle, #c4beff, transparent);
+    top: -100px; 
+    left: -100px;
+}
+
+.shape-2 {
+    width: 400px; 
+    height: 400px;
+    background: radial-gradient(circle, #ffcbd5, transparent);
+    bottom: -100px; 
+    right: -100px;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 1000;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.4rem;
+}
+
+.logo-icon {
+    color: var(--purple);
+}
+
+.logo-accent {
+    color: var(--purple);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.nav-back {
+    background: transparent;
+    border: 1px solid var(--purple);
+    color: var(--purple);
+    padding: 0.5rem 1.2rem;
+    border-radius: 50px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.nav-back:hover {
+    background: var(--purple);
+    color: var(--white);
+}
+
+/* ── PAGE CONTAINER ── */
+.page {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 2rem 40px;
+    z-index: 1;
+}
+
+.notes-header {
+    margin-bottom: 3rem;
+    text-align: center;
+    animation: fadeUp 0.8s ease;
+}
+
+.subject-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.subject-title .highlight {
+    background: linear-gradient(135deg, var(--purple) 0%, var(--coral) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: var(--gray);
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+}
+
+/* ── NOTES CONTAINER & CARDS ── */
+.notes-container {
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-sm);
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Spinner Loader */
+.loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    gap: 1rem;
+    color: var(--purple);
+    font-weight: 600;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(108, 99, 255, 0.15);
+    border-top: 3px solid var(--purple);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.note-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.note-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--purple);
+}
+
+.note-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--purple), var(--teal));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.note-card:hover::before { 
+    opacity: 1; 
+}
+
+.note-icon {
+    font-size: 2rem;
+    color: var(--purple);
+    background: var(--purple-light);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.note-info { 
+    flex: 1; 
+}
+
+.note-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--dark);
+    word-break: break-word;
+}
+
+.note-date {
+    font-size: 0.82rem;
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.btn-download {
+    margin-top: auto;
+    background: var(--purple-light);
+    color: var(--purple);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.note-card:hover .btn-download {
+    background: var(--purple);
+    color: var(--white);
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--gray);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* ── KEYFRAMES ── */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+    .notes-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 90px 1.5rem 30px;
+    }
+    .notes-container {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .notes-grid {
+        grid-template-columns: 1fr;
+    }
+}

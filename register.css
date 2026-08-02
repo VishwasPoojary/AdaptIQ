@@ -1,0 +1,117 @@
+/* 1. CORE TOKENS & RESET */
+:root {
+    --primary-color: #2563eb;       /* Corporate Blue */
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --bg-card: #ffffff;
+    --bg-hover: #f8fafc;
+    --border-color: #e2e8f0;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --transition: all 0.2s ease-in-out;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f1f5f9;
+    padding: 40px;
+    color: var(--text-main);
+}
+
+/* 2. TOP LEVEL LIST */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: inline-flex; /* Keeps the main menu horizontal */
+}
+
+li {
+    position: relative; /* Anchor for the absolute-positioned children */
+    background: var(--bg-card);
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+/* 3. LIST ITEM STYLING */
+li {
+    padding: 12px 24px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+li a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Hover Effects */
+li:hover {
+    background-color: var(--bg-hover);
+    color: var(--primary-color);
+}
+
+/* 4. THE DROPDOWN ENGINE */
+/* Hide all nested levels by default */
+ul ul {
+    display: block; /* We use opacity/visibility for smoother feel */
+    position: absolute;
+    top: 100%;      /* First level drops down */
+    left: 0;
+    min-width: 200px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    z-index: 100;
+    
+    /* Animation initial state */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: var(--transition);
+}
+
+/* 5. MULTI-LEVEL FLYOUTS */
+/* Level 3 and deeper fly out to the RIGHT */
+ul ul ul {
+    top: 0 !important;
+    left: 100% !important; /* Positions next to the parent */
+    transform: translateX(10px);
+}
+
+/* Trigger visibility on hover */
+li:hover > ul {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, 0);
+}
+
+/* 6. NESTED ITEM POLISH */
+ul ul li {
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+ul ul li:last-child {
+    border-bottom: none;
+}
+
+/* Subtle indicator for items with submenus */
+li:has(ul)::after {
+    content: ' ›';
+    float: right;
+    margin-left: 10px;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* Top level indicator looks slightly different */
+ul > li:has(ul)::after {
+    content: ' ▾';
+}

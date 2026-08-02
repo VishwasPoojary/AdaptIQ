@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdaptIQ – Learn Smarter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=1.0.2" />
+  <!-- Instant session-check protect -->
+  <script>
+    if (localStorage.getItem('firebase_user_active') !== 'true') {
+      window.location.replace('Login.html');
+    }
+  </script>
+</head>
+
+<body>
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script>
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCOvhichhN6LqA1w8ZNg9bwdHrRRKyiWxE",
+      authDomain: "adaptiq-64d2d.firebaseapp.com",
+      projectId: "adaptiq-64d2d",
+      storageBucket: "adaptiq-64d2d.firebasestorage.app",
+      messagingSenderId: "1005881754058",
+      appId: "1:1005881754058:web:40f5677d68f6139ff6cf33",
+      measurementId: "G-SB1EFL5982"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Verify session
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        localStorage.removeItem('firebase_user_active');
+        window.location.replace('Login.html');
+      } else {
+        localStorage.setItem('firebase_user_active', 'true');
+      }
+    });
+  </script>
+
+  <!-- ═══════════════════════════════════
+       NAVBAR
+       ═══════════════════════════════════ -->
+  <nav class="navbar">
+    <div class="nav-container">
+
+      <!-- Logo -->
+      <div class="nav-logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">Adapt<span class="logo-accent">IQ</span></span>
+      </div>
+
+      <!-- Nav Links -->
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+
+        <!-- ── SELECT COURSE DROPDOWN (click-to-open) ── -->
+        <li class="has-dropdown" id="coursesMenu">
+          <span class="nav-dropdown-trigger">
+            Course <span class="trigger-arrow">▾</span>
+          </span>
+          <ul class="nav-dropdown">
+            <li class="drop-item" id="bcaItem">
+              BCA<br>
+              BCom<br>
+              BBA<br>
+            </li>
+            <!-- ── END SELECT COURSE DROPDOWN ── -->
+          </ul>
+        </li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#" id="logoutBtn" style="color: #FF6584; font-weight: bold;">Log Out</a></li>
+
+        <!-- Nav Actions — Get Started removed from here -->
+        <button class="nav-toggle" id="navToggle">
+          <span></span><span></span><span></span>
+        </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════
+       HERO SECTION
+       ═══════════════════════════════════ -->
+  <section class="hero" id="home">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="hero-container hero-centered">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          AI-Powered Adaptive Learning
+        </div>
+        <h1 class="hero-title">
+          Learn Smarter,<br />
+          <span class="title-highlight">Not Harder</span>
+        </h1>
+        <p class="hero-sub">
+          An intelligent platform that understands how <em>you</em> learn — adapting content, pace, and difficulty in
+          real time to help you reach your goals faster.
+        </p>
+
+        <!-- Get Started button placed here below subtitle -->
+        <div class="hero-cta-wrap" style="flex-direction: column; gap: 1.2rem; align-items: center; margin-top: 1rem;">
+          <a href="#" class="btn-start hero-btn-start" style="padding: 0.75rem 2.2rem; font-size: 1.05rem; pointer-events: none; opacity: 0.95;">Select Course Below</a>
+          <div style="display: flex; gap: 0.8rem; justify-content: center; align-items: center; flex-wrap: wrap;">
+            <a href="BCA.html" class="btn-start hero-btn-start" style="padding: 0.6rem 1.8rem; font-size: 0.95rem;">BCA</a>
+            <a href="BCom.html" class="btn-start hero-btn-start" style="padding: 0.6rem 1.8rem; font-size: 0.95rem;">B.Com</a>
+            <a href="BBA.html" class="btn-start hero-btn-start" style="padding: 0.6rem 1.8rem; font-size: 0.95rem;">BBA</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       FEATURES SECTION
+       ═══════════════════════════════════ -->
+  <section class="features" id="features">
+    <div class="features-container">
+      <div class="section-label">Core Features</div>
+      <h2 class="section-title">Everything You Need to <span class="title-highlight">Excel</span></h2>
+      <p class="section-sub">Every module works together to create a seamless, intelligent learning experience tailored
+        just for you.</p>
+      <div class="features-grid">
+
+        <div class="feature-card fc-purple" onclick="window.location.href='#home'" style="cursor: pointer;">
+          <div class="fc-top">
+            <div class="fc-emoji">📚</div>
+            <div class="fc-tag">Notes</div>
+          </div>
+          <h3>Notes Database</h3>
+          <p>Access and download premium study materials organized systematically by Course and Semester for BCA, BBA, and BCom.</p>
+          <div class="fc-footer"><span>Explore courses →</span></div>
+        </div>
+
+        <div class="feature-card fc-coral" onclick="window.location.href='quiz.html'" style="cursor: pointer;">
+          <div class="fc-top">
+            <div class="fc-emoji">🧠</div>
+            <div class="fc-tag">AI Quiz</div>
+          </div>
+          <h3>AI Quiz Generator</h3>
+          <p>Upload any study note (.pdf, .docx, or .txt) to dynamically generate custom 20-question multiple-choice quizzes using Gemini AI.</p>
+          <div class="fc-footer"><span>Generate quiz →</span></div>
+        </div>
+
+        <div class="feature-card fc-teal" onclick="window.location.href='#home'" style="cursor: pointer;">
+          <div class="fc-top">
+            <div class="fc-emoji">☁️</div>
+            <div class="fc-tag">Secure</div>
+          </div>
+          <h3>Cloud File Storage</h3>
+          <p>All study guides are securely backed up in the cloud on optimized content delivery networks (Cloudinary) for instant downloads.</p>
+          <div class="fc-footer"><span>View materials →</span></div>
+        </div>
+
+        <div class="feature-card fc-gold" onclick="window.location.href='admin.html'" style="cursor: pointer;">
+          <div class="fc-top">
+            <div class="fc-emoji">🔑</div>
+            <div class="fc-tag">Control</div>
+          </div>
+          <h3>Admin Dashboard</h3>
+          <p>Educators can log in securely to instantly upload study notes, manage the catalog, and sort files by Course and Semester.</p>
+          <div class="fc-footer"><span>Open dashboard →</span></div>
+        </div>
+
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       SCRIPTS
+       ═══════════════════════════════════ -->
+  <script>
+    /* ── Mobile nav toggle ── */
+    const toggle = document.getElementById('navToggle');
+    const navLinks = document.querySelector('.nav-links');
+    toggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+    /* ── Navbar scroll effect ── */
+    window.addEventListener('scroll', () => {
+      document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    /* ── Scroll-reveal animations ── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.feature-card, .hero-content').forEach(el => observer.observe(el));
+
+    /* ══════════════════════════════════════════
+       SELECT COURSE — CLICK TO OPEN/CLOSE
+       ══════════════════════════════════════════ */
+    const coursesMenu = document.getElementById('coursesMenu');
+    const trigger = coursesMenu.querySelector('.nav-dropdown-trigger');
+
+    // Toggle main dropdown on click
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      coursesMenu.classList.toggle('open');
+    });
+
+    // Sub-items (BCA / BCom / BBA) — click to open flyout
+    document.querySelectorAll('.drop-item').forEach(item => {
+      if (!item.querySelector(':scope > ul')) return;
+
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = item.classList.contains('open');
+
+        // Close siblings at same level
+        item.parentElement.querySelectorAll(':scope > .drop-item').forEach(s => {
+          s.classList.remove('open');
+        });
+
+        // Toggle self
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
+    // Close everything on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#coursesMenu')) {
+        coursesMenu.classList.remove('open');
+        document.querySelectorAll('.drop-item.open').forEach(el => el.classList.remove('open'));
+      }
+    });
+
+    /* ── Logout function ── */
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        auth.signOut().then(() => {
+          localStorage.removeItem('firebase_user_active');
+          window.location.replace('index.html');
+        }).catch((err) => {
+          console.error("Logout error:", err);
+          window.location.replace('index.html');
+        });
+      });
+    }
+  </script>
+
+</body>
+
+</html>

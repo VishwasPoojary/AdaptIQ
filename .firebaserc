@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "adaptiq-64d2d",
+    "adaptiq-64d2d": "adaptiq-64d2d"
+  },
+  "targets": {},
+  "etags": {}
+}

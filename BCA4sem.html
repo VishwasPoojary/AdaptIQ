@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Instant session-check protect -->
+    <script>
+        if (localStorage.getItem('firebase_user_active') !== 'true') {
+            window.location.replace('Login.html');
+        }
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCA Semester 2 – AdaptIQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+    <style>
+        /* ── TOKENS ── */
+        :root {
+            --purple:       #6C63FF;
+            --purple-light: #ede9ff;
+            --purple-dark:  #4b44cc;
+            --coral:        #FF6584;
+            --coral-light:  #ffe8ed;
+            --teal:         #00C9A7;
+            --teal-light:   #d4f7f1;
+            --gold:         #FFB830;
+            --gold-light:   #fff3d4;
+            --dark:         #1a1a2e;
+            --dark-mid:     #2d2d4e;
+            --gray:         #6b7280;
+            --gray-light:   #f4f4f8;
+            --white:        #ffffff;
+            --border:       rgba(108,99,255,0.12);
+            --shadow-sm:    0 2px 12px rgba(108,99,255,0.08);
+            --shadow-md:    0 8px 32px rgba(108,99,255,0.14);
+            --shadow-lg:    0 20px 60px rgba(108,99,255,0.18);
+            --radius:       16px;
+            --radius-sm:    10px;
+            --radius-xs:    6px;
+            --font-display: 'Syne', sans-serif;
+            --font-body:    'DM Sans', sans-serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fdfcff 0%, #f0edff 50%, #fff5f7 100%);
+            color: var(--dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* ── BACKGROUND BLOBS ── */
+        .bg-shapes { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+        .shape { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.35; }
+        .shape-1 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, #c4beff, transparent);
+            top: -100px; left: -100px;
+            animation: blobDrift 12s ease-in-out infinite alternate;
+        }
+        .shape-2 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, #ffb8c8, transparent);
+            bottom: -80px; right: 10%;
+            animation: blobDrift 15s ease-in-out infinite alternate-reverse;
+        }
+        .shape-3 {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, #b8f0e8, transparent);
+            top: 40%; right: 30%;
+            animation: blobDrift 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes blobDrift {
+            0%   { transform: translate(0px, 0px) scale(1); }
+            33%  { transform: translate(30px, -50px) scale(1.05); }
+            66%  { transform: translate(-20px, 20px) scale(0.95); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 1.2rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-sm);
+            padding: 0.8rem 2rem;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .logo-icon   { color: var(--purple); font-size: 1.6rem; }
+        .logo-accent { color: var(--purple); }
+
+        .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+
+        .nav-back {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.45rem 1rem;
+            border-radius: 50px;
+            border: 1.5px solid var(--border);
+            background: var(--white);
+            transition: all 0.25s ease;
+        }
+
+        .nav-back:hover {
+            color: var(--purple);
+            border-color: var(--purple);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ── PAGE WRAPPER ── */
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 8rem 2rem 5rem;
+        }
+
+        /* ── HERO ── */
+        .course-hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeUp 0.7s ease both;
+        }
+
+        .breadcrumb {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--gray);
+            margin-bottom: 1.2rem;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.35rem 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .breadcrumb span { color: var(--purple); }
+        .breadcrumb .sep { opacity: 0.4; }
+
+        .course-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .course-title .highlight {
+            background: linear-gradient(135deg, var(--purple), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .course-subtitle {
+            font-size: 1rem;
+            color: var(--gray);
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.75;
+        }
+
+        /* Stats row */
+        .sem-stats {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.6rem 1.8rem;
+            box-shadow: var(--shadow-sm);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .sem-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--gray);
+        }
+
+        .sem-stat strong { color: var(--dark); font-weight: 800; }
+
+        .stat-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+        /* ── SECTION LABEL ── */
+        .select-label {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            animation: fadeUp 0.7s ease 0.15s both;
+        }
+
+        .select-label::before {
+            content: '';
+            display: inline-block;
+            width: 4px; height: 1.2rem;
+            background: linear-gradient(180deg, var(--purple), var(--coral));
+            border-radius: 4px;
+        }
+
+        /* ── SUBJECT CARDS GRID ── */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .subject-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.4rem 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s, opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+        }
+
+        .subject-card.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .subject-card:nth-child(1)  { transition-delay: 0.05s; }
+        .subject-card:nth-child(2)  { transition-delay: 0.10s; }
+        .subject-card:nth-child(3)  { transition-delay: 0.15s; }
+        .subject-card:nth-child(4)  { transition-delay: 0.20s; }
+        .subject-card:nth-child(5)  { transition-delay: 0.25s; }
+        .subject-card:nth-child(6)  { transition-delay: 0.30s; }
+        .subject-card:nth-child(7)  { transition-delay: 0.35s; }
+        .subject-card:nth-child(8)  { transition-delay: 0.40s; }
+
+        /* Shimmer */
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.55s ease;
+            pointer-events: none;
+        }
+
+        .subject-card:hover::before { left: 100%; }
+
+        .subject-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(108,99,255,0.08);
+        }
+
+        .subject-card:active { transform: scale(0.98); }
+
+        /* Category borders & hover */
+        .subject-card.theory     { border-left: 4px solid var(--purple); }
+        .subject-card.practical  { border-left: 4px solid var(--teal); }
+        .subject-card.lang       { border-left: 4px solid var(--coral); }
+        .subject-card.compulsory { border-left: 4px solid var(--gold); }
+
+        .subject-card.theory:hover     { background: var(--purple-light); border-color: var(--purple); }
+        .subject-card.practical:hover  { background: var(--teal-light);   border-color: var(--teal); }
+        .subject-card.lang:hover       { background: var(--coral-light);  border-color: var(--coral); }
+        .subject-card.compulsory:hover { background: var(--gold-light);   border-color: var(--gold); }
+
+        /* Number badge */
+        .sub-num {
+            width: 36px; height: 36px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
+
+        .theory     .sub-num { background: var(--purple-light); color: var(--purple); }
+        .practical  .sub-num { background: var(--teal-light);   color: var(--teal); }
+        .lang       .sub-num { background: var(--coral-light);  color: var(--coral); }
+        .compulsory .sub-num { background: var(--gold-light);   color: #b37d00; }
+
+        .sub-body { flex: 1; min-width: 0; }
+
+        .sub-name {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.4rem;
+            line-height: 1.3;
+        }
+
+        .sub-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            padding: 0.2rem 0.55rem;
+            border-radius: 50px;
+        }
+
+        .theory     .meta-tag { background: var(--purple-light); color: var(--purple); }
+        .practical  .meta-tag { background: var(--teal-light);   color: var(--teal); }
+        .lang       .meta-tag { background: var(--coral-light);  color: var(--coral); }
+        .compulsory .meta-tag { background: var(--gold-light);   color: #b37d00; }
+
+        .meta-info { font-size: 0.75rem; color: var(--gray); font-weight: 500; }
+
+        .sub-arrow {
+            font-size: 1.1rem;
+            color: var(--gray);
+            opacity: 0.4;
+            flex-shrink: 0;
+            align-self: center;
+            transition: opacity 0.2s, transform 0.25s;
+        }
+
+        .subject-card:hover .sub-arrow { opacity: 1; transform: translateX(4px); }
+
+        /* ── SUMMARY CARD ── */
+        .summary-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem 2rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            text-align: center;
+            animation: fadeUp 0.7s ease 0.5s both;
+        }
+
+        .sum-value {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .sum-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.98); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 700px) {
+            .subjects-grid { grid-template-columns: 1fr; }
+            .summary-card  { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+            .page          { padding: 6rem 1rem 3rem; }
+            .course-title  { font-size: 1.8rem; }
+            .nav-logo      { font-size: 1.2rem; }
+            .nav-back      { font-size: 0.75rem; padding: 0.4rem 0.8rem; }
+            .navbar        { padding: 1rem; }
+            .navbar.scrolled { padding: 0.7rem 1rem; }
+            .sem-stats     { flex-direction: column; width: 100%; align-items: stretch; text-align: center; border-radius: 20px; padding: 1.2rem; gap: 0.8rem; }
+            .sem-stat      { justify-content: center; }
+        }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            border: none;
+            background: none;
+        }
+        .note-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .note-icon { font-size: 1.5rem; }
+        .note-link { font-weight: 600; color: var(--purple); flex: 1; text-decoration: none; }
+        .note-link:hover { text-decoration: underline; }
+        .note-date { font-size: 0.8rem; color: var(--gray); }
+    </style>
+</head>
+<body>
+
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <a href="indexx.html" class="nav-logo">
+            <span class="logo-icon">⬡</span>
+            <span>Adapt<span class="logo-accent">IQ</span></span>
+        </a>
+        <div class="nav-right">
+            <a href="BCA.html" class="nav-back">← Back to BCA</a>
+        </div>
+    </nav>
+
+    <div class="page">
+
+        <!-- Hero -->
+        <div class="course-hero">
+            <div class="breadcrumb">
+                BCA <span class="sep">›</span> <span>2nd Year</span> <span class="sep">›</span> <span>Semester 4</span>
+            </div>
+            <h1 class="course-title">
+                <span class="highlight">Semester 4</span> Subjects
+            </h1>
+            <p class="course-subtitle">
+                Select the subject you want to study. Each subject contains notes, materials, and practice quizzes.
+            </p>
+            <div class="sem-stats">
+                <div class="sem-stat">
+                    <div class="stat-dot" style="background:var(--purple)"></div>
+                    <strong>9</strong> Subjects
+                </div>
+                <div class="sem-stat">
+                    <div class="stat-dot" style="background:var(--teal)"></div>
+                    <strong>33</strong> Hrs / Week
+                </div>
+                <div class="sem-stat">
+                    <div class="stat-dot" style="background:var(--coral)"></div>
+                    <strong>700</strong> Total Marks
+                </div>
+                <div class="sem-stat">
+                    <div class="stat-dot" style="background:var(--gold)"></div>
+                    <strong>25</strong> Credits
+                </div>
+            </div>
+        </div>
+
+        <div class="select-label">Select a Subject</div>
+
+        <!-- Subject Cards -->
+        <div class="subjects-grid">
+
+            <a href="#" class="subject-card theory">
+                <div class="sub-num">1</div>
+                <div class="sub-body">
+                    <div class="sub-name">Python Programming</div>
+                    <div class="sub-meta">
+                        <span class="meta-tag">Theory</span>
+                        <span class="meta-info">4 hrs/week &nbsp;·&nbsp; SEE 80 &nbsp;·&nbsp; IA 20 &nbsp;·&nbsp; 3 Credits</span>
+                    </div>
+                </div>
+                <span class="sub-arrow">→</span>
+            </a>
+
+            <a href="#" class="subject-card practical">
+                <div class="sub-num">2</div>
+                <div class="sub-body">
+                    <div class="sub-name">Python Programming Lab</div>
+                    <div class="sub-meta">
+                        <span class="meta-tag">Practical</span>
+                        <span class="meta-info">4 hrs/week &nbsp;·&nbsp; SEE 40 &nbsp;·&nbsp; IA 10 &nbsp;·&nbsp; 2 Credits</span>
+                    </div>
+                </div>
+                <span class="sub-arrow">→</span>
+            </a>
+
+            <a href="#" class="subject-card theory">
+                <div class="sub-num">3</div>
+                <div class="sub-body">
+                    <div class="sub-name">Advanced JAVA and J2EE</div>
+                    <div class="sub-meta">
+                        <span class="meta-tag">Theory</span>
+                        <span class="meta-info">4 hrs/week &nbsp;·&nbsp; SEE 80 &nbsp;·&nbsp; IA 20 &nbsp;·&nbsp; 3 Credits</span>
+                    </div>
+                </div>
+                <span class="sub-arrow">→</span>
+            </a>
+
+            <a href="#" class="subject-card practical">
+                <div class="sub-num">4</div>
+                <div class="sub-body">
+                    <div class="sub-name">Advanced JAVA and J2EE Lab</div>
+                    <div class="sub-meta">
+                        <span class="meta-tag">Practical</span>
+                        <span class="meta-info">4 hrs/week &nbsp;·&nbsp; SEE 40 &nbsp;·&nbsp; IA 10 &nbsp;·&nbsp; 2 Credits</span>
+                    </div>
+                </div>
+                <span class="sub-arrow">→</span>
+            </a>
+
+            <a href="#" class="subject-card theory">
+                <div class="sub-num">5</div>
+                <div class="sub-body">
+                    <div class="sub-name">Operating System Concepts</div>
+                    <div class="sub-meta">
+                        <span class="meta-tag">Theory</span>
+                        <span class="meta-info">5 hrs/week &nbsp;·&nbsp; SEE 80 &nbsp;·&nbsp; IA 20 &nbsp;·&nbsp; 5 Credits</span>
+                    </div>
+                </div>
+                <span class="sub-arrow">→</span>
+            </a>
+
+            <a href="#" class="subject-card lang">
+                <div class="sub-num">6</div>
+                <div class="sub-body">
+                    <div class="sub-name">Language-1(BCA sem4)</div>
+                    <div class="sub-meta">
+                        <span class="meta-tag">Lang</span>
+                        <span class="meta-info">4 hrs/week &nbsp;·&nbsp; SEE 80 &nbsp;·&nbsp; IA 20 &nbsp;·&nbsp; 3 Credits</span>
+                    </div>
+                </div>
+                <span class="sub-arrow">→</span>
+            </a>
+
+            <a href="#" class="subject-card lang">
+                <div class="sub-num">7</div>
+                <div class="sub-body">
+                    <div class="sub-name">Language-2(BCA sem4)</div>
+                    <div class="sub-meta">
+                        <span class="meta-tag">Lang</span>
+                        <span class="meta-info">4 hrs/week &nbsp;·&nbsp; SEE 80 &nbsp;·&nbsp; IA 20 &nbsp;·&nbsp; 3 Credits</span>
+                    </div>
+                </div>
+                <span class="sub-arrow">→</span>
+            </a>
+
+            <a href="#" class="subject-card compulsory">
+                <div class="sub-num">8</div>
+                <div class="sub-body">
+                    <div class="sub-name">Object Oriented Analysis &Design</div>
+                    <div class="sub-meta">
+                        <span class="meta-tag">Elective</span>
+                        <span class="meta-info">2 hrs/week &nbsp;·&nbsp; SEE 40 &nbsp;·&nbsp; IA 10 &nbsp;·&nbsp; 2 Credits</span>
+                    </div>
+                </div>
+                <span class="sub-arrow">→</span>
+            </a>
+
+            <a href="#" class="subject-card compulsory">
+                <div class="sub-num">9</div>
+                <div class="sub-body">
+                    <div class="sub-name">Internet Basics</div>
+                    <div class="sub-meta">
+                        <span class="meta-tag">Compulsory</span>
+                        <span class="meta-info">2 hrs/week &nbsp;·&nbsp; SEE 40 &nbsp;·&nbsp; IA 10 &nbsp;·&nbsp; 2 Credits</span>
+                    </div>
+                </div>
+                <span class="sub-arrow">→</span>
+            </a>
+
+        </div>
+
+        <!-- Summary Card -->
+        <div class="summary-card">
+            <div class="sum-item">
+                <span class="sum-value" style="color:var(--purple)">33</span>
+                <span class="sum-label">Teaching Hrs</span>
+            </div>
+            <div class="sum-item">
+                <span class="sum-value" style="color:var(--coral)">560</span>
+                <span class="sum-label">SEE Marks</span>
+            </div>
+            <div class="sum-item">
+                <span class="sum-value" style="color:var(--teal)">140</span>
+                <span class="sum-label">IA Marks</span>
+            </div>
+            <div class="sum-item">
+                <span class="sum-value" style="color:var(--gold)">25</span>
+                <span class="sum-label">Total Credits</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.subject-card').forEach(el => observer.observe(el));
+
+        /* Navigate to Notes Page */
+        document.querySelectorAll('.subject-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                const subjectName = card.querySelector('.sub-name').innerText;
+                window.location.href = `notes.html?subject=${encodeURIComponent(subjectName)}`;
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard – AdaptIQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --purple: #6C63FF;
+            --purple-dark: #5a52d5;
+            --coral: #FF6584;
+            --dark: #1a1a2e;
+            --gray: #6b7280;
+            --gray-light: #f4f4f8;
+            --white: #ffffff;
+            --border: rgba(108,99,255,0.2);
+            --shadow-md: 0 10px 40px rgba(108,99,255,0.2);
+            --radius: 20px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(-45deg, #f0edff, #fff5f7, #e0f7fa, #fce4ec);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Animated Background Shapes */
+        .shape {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: -1;
+            animation: float 15s infinite alternate cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .shape-1 { width: 400px; height: 400px; background: rgba(108, 99, 255, 0.3); top: -100px; left: -100px; }
+        .shape-2 { width: 300px; height: 300px; background: rgba(255, 101, 132, 0.3); bottom: -50px; right: -50px; animation-delay: -5s; }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-40px) scale(1.05); }
+        }
+
+        /* Container styling for glassmorphism */
+        .glass-box {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ─── LOGIN SECTION ─── */
+        #login-section {
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            position: absolute;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            z-index: 10;
+        }
+
+        #login-section.hidden {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            margin-top: 0;
+            color: var(--dark);
+            background: linear-gradient(to right, var(--purple) 20%, var(--coral) 40%, var(--coral) 60%, var(--purple) 80%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+        }
+
+        .input-group { margin-bottom: 1.5rem; text-align: left; position: relative; }
+        .input-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--gray); transition: color 0.3s ease; }
+        .input-group:focus-within label { color: var(--purple); }
+        .input-group input, .input-group select { width: 100%; padding: 1rem 1.2rem; border: 2px solid var(--border); border-radius: 12px; font-size: 1rem; font-family: inherit; background: rgba(255, 255, 255, 0.9); outline: none; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .input-group input:focus, .input-group select:focus { border-color: var(--purple); box-shadow: 0 4px 15px rgba(108,99,255,0.15); background: #fff; }
+
+        .btn { background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%); color: var(--white); border: none; padding: 1rem 1.5rem; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 15px rgba(108,99,255,0.3); position: relative; overflow: hidden; }
+        .btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s ease; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108,99,255,0.4); }
+        .btn:hover::after { left: 100%; }
+        .btn:active { transform: translateY(1px); }
+        .status-msg { margin-top: 1.2rem; font-size: 0.95rem; font-weight: 600; text-align: center; }
+        .success { color: #00C9A7; }
+        .error { color: #FF6584; }
+
+        /* Connection Status Badge */
+        .conn-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid var(--border);
+        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-online { background: #00C9A7; box-shadow: 0 0 8px #00C9A7; }
+        .dot-offline { background: #FF6584; box-shadow: 0 0 8px #FF6584; }
+        .dot-pending { background: #FFB830; animation: pulse 1.5s infinite; }
+
+        /* ─── SIDE-BY-SIDE DASHBOARD LAYOUT ─── */
+        #dashboard-layout {
+            display: none;
+            width: 100%;
+            max-width: 1400px;
+            height: 90vh;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        #dashboard-layout.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .conn-status-sidebar {
+            margin-top: auto;
+            padding: 1.5rem;
+            background: rgba(108, 99, 255, 0.05);
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+        .status-item { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .status-val { font-weight: 700; }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .dashboard-header .brand {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .btn-logout {
+            background: rgba(255,101,132,0.1);
+            color: var(--coral);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-logout:hover { background: rgba(255,101,132,0.2); }
+
+        .split-layout {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        /* Left side: Upload Form */
+        .upload-panel {
+            width: 400px;
+            padding: 2rem;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Right side: Manage Grid */
+        .manage-panel {
+            flex-grow: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar */
+        .upload-panel::-webkit-scrollbar, .manage-panel::-webkit-scrollbar { width: 8px; }
+        .upload-panel::-webkit-scrollbar-track, .manage-panel::-webkit-scrollbar-track { background: transparent; }
+        .upload-panel::-webkit-scrollbar-thumb, .manage-panel::-webkit-scrollbar-thumb { background: rgba(108,99,255,0.3); border-radius: 10px; }
+
+        /* Manage Notes Styling */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .note-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(108,99,255,0.15);
+        }
+        .note-subject { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--purple); letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .note-name { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem; word-break: break-all; }
+        .note-actions { display: flex; gap: 0.5rem; margin-top: 1.5rem; }
+        .btn-action { flex: 1; padding: 0.6rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-edit { background: #fff3d4; color: #b37d00; }
+        .btn-edit:hover { background: #ffe4a0; }
+        .btn-delete { background: #ffe8ed; color: #FF6584; }
+        .btn-delete:hover { background: #ffc2d1; }
+        .loading { color: var(--gray); font-weight: 500; }
+
+        /* Modal for editing */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center;
+        }
+        .modal {
+            background: #fff; padding: 2.5rem; border-radius: var(--radius); width: 100%; max-width: 400px; box-shadow: var(--shadow-md); animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal h2 { margin-top: 0; font-family: 'Syne', sans-serif; }
+        .modal-actions { display: flex; gap: 1rem; }
+        .btn-save { flex: 2; background: var(--purple); color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-cancel { flex: 1; background: var(--gray-light); color: var(--gray); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+
+        @media (max-width: 900px) {
+            .split-layout { flex-direction: column; overflow: visible; }
+            .upload-panel { width: 100%; border-right: none; border-bottom: 1px solid var(--border); overflow: visible; padding: 1.5rem; }
+            .manage-panel { overflow: visible; padding: 1.5rem; }
+            #dashboard-layout { height: auto; min-height: 95vh; margin: 10px 0; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 8px; }
+            #login-section { padding: 1.8rem 1.2rem; }
+            .title { font-size: 1.6rem; }
+            .shape-1 { width: 250px; height: 250px; }
+            .shape-2 { width: 150px; height: 150px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+
+    <!-- Login Section -->
+    <div class="glass-box" id="login-section">
+        <h1 class="title">Admin Login</h1>
+        
+        <!-- Dynamic Connection Badges -->
+        <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 2rem;">
+            <div class="status-badge" style="background: rgba(255,255,255,0.7); padding: 5px 12px; border-radius: 50px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(108,99,255,0.15);">
+                <span class="dot" id="login-server-status-dot" style="width: 7px; height: 7px; border-radius: 50%; background-color: #FFB830; box-shadow: 0 0 6px #FFB830; display: inline-block;"></span>
+                Server: <span id="login-server-status" style="color: #b37d00;">Checking...</span>
+            </div>
+            <div class="status-badge" style="background: rgba(255,255,255,0.7); padding: 5px 12px; border-radius: 50px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(108,99,255,0.15);">
+                <span class="dot" id="login-db-status-dot" style="width: 7px; height: 7px; border-radius: 50%; background-color: #FFB830; box-shadow: 0 0 6px #FFB830; display: inline-block;"></span>
+                DB: <span id="login-db-status" style="color: #b37d00;">Checking...</span>
+            </div>
+        </div>
+
+        <form id="login-form">
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <div id="login-status" class="status-msg error"></div>
+        </form>
+    </div>
+
+    <!-- Unified Dashboard Layout (Side-by-Side) -->
+    <div class="glass-box" id="dashboard-layout">
+        
+        <div class="dashboard-header">
+            <div class="brand">AdaptIQ Admin</div>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="split-layout">
+            <!-- Left Side: Upload Notes -->
+            <div class="upload-panel">
+                <h1 class="title" style="font-size: 1.8rem; margin-bottom: 1.5rem;">Upload Notes</h1>
+                <form id="upload-form">
+                    <div class="input-group">
+                        <label>Select Course</label>
+                        <select id="upload-course" required>
+                            <option value="" disabled selected>Select Course...</option>
+                            <option value="BCA">BCA (Bachelor of Computer Applications)</option>
+                            <option value="BBA">BBA (Bachelor of Business Administration)</option>
+                            <option value="BCom">BCom (Bachelor of Commerce)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Select Semester</label>
+                        <select id="upload-semester" required disabled>
+                            <option value="" disabled selected>Select Course First...</option>
+                            <option value="Semester 1">Semester 1</option>
+                            <option value="Semester 2">Semester 2</option>
+                            <option value="Semester 3">Semester 3</option>
+                            <option value="Semester 4">Semester 4</option>
+                            <option value="Semester 5">Semester 5</option>
+                            <option value="Semester 6">Semester 6</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Select Subject</label>
+                        <select id="subject" name="subject" required disabled>
+                            <option value="" disabled selected>Select Semester First...</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>File (PDF/DOC)</label>
+                        <input type="file" id="file" accept=".pdf,.doc,.docx" required>
+                    </div>
+                    <button type="submit" class="btn" style="margin-top: 1rem;">Upload Note</button>
+                    <div id="upload-status" class="status-msg"></div>
+                </form>
+
+                <!-- Connection Status -->
+                <div class="conn-status-sidebar" style="margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                    <div class="status-item">
+                        <span>Server Status:</span>
+                        <span id="sidebar-server-status" class="status-val" style="color: var(--gray);">Checking...</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Database Status:</span>
+                        <span id="sidebar-db-status" class="status-val" style="color: var(--gray);">Checking...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Manage Notes -->
+            <div class="manage-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                    <h1 class="title" style="font-size: 1.8rem; margin: 0;">Manage Database</h1>
+                    <div style="display: flex; gap: 0.8rem;">
+                        <select id="filter-course" style="padding: 0.6rem 1rem; border: 2px solid var(--border); border-radius: 10px; font-size: 0.9rem; font-weight: 600; outline: none; background: #fff; cursor: pointer; transition: all 0.3s ease; font-family: inherit;">
+                            <option value="ALL">All Courses</option>
+                            <option value="BCA">BCA</option>
+                            <option value="BBA">BBA</option>
+                            <option value="BCom">BCom</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <select id="filter-semester" style="padding: 0.6rem 1rem; border: 2px solid var(--border); border-radius: 10px; font-size: 0.9rem; font-weight: 600; outline: none; background: #fff; cursor: pointer; transition: all 0.3s ease; font-family: inherit;">
+                            <option value="ALL">All Semesters</option>
+                            <option value="Semester 1">Semester 1</option>
+                            <option value="Semester 2">Semester 2</option>
+                            <option value="Semester 3">Semester 3</option>
+                            <option value="Semester 4">Semester 4</option>
+                            <option value="Semester 5">Semester 5</option>
+                            <option value="Semester 6">Semester 6</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="loading" class="loading">Loading notes...</div>
+                <div id="notes-container"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal">
+            <h2 style="font-family: 'Syne', sans-serif; margin-top: 0;">Edit Note</h2>
+            <div class="input-group">
+                <label>Subject</label>
+                <input type="text" id="edit-subject">
+            </div>
+            <div class="input-group">
+                <label>File Name</label>
+                <input type="text" id="edit-filename">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-save" onclick="saveNote()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const loginForm = document.getElementById('login-form');
+        const loginSection = document.getElementById('login-section');
+        const dashboardLayout = document.getElementById('dashboard-layout');
+        const loginStatus = document.getElementById('login-status');
+        
+        const uploadForm = document.getElementById('upload-form');
+        const uploadStatus = document.getElementById('upload-status');
+
+        const courseSelect = document.getElementById('upload-course');
+        const semesterSelect = document.getElementById('upload-semester');
+        const subjectSelect = document.getElementById('subject');
+
+        const subjectsData = {
+          "BCA": {
+            "Semester 1": [
+              "Fundamentals of Computers",
+              "Information Technology Lab",
+              "Programming in C",
+              "C Programming Lab",
+              "Discrete Mathematics for Computer Applications",
+              "Language-1(BCA sem1)",
+              "Language-2(BCA sem1)",
+              "Constitutional Values"
+            ],
+            "Semester 2": [
+              "Data Structures",
+              "Data Structures Lab",
+              "Object Oriented Programming using Java",
+              "Object Oriented Programming Lab",
+              "Computational Mathematics",
+              "Language-1(BCA sem2)",
+              "Language-2(BCA sem2)",
+              "Environmental Studies"
+            ],
+            "Semester 3": [
+              "Database Management System",
+              "Database Management System Lab",
+              "C# and .NET Framework",
+              "C# and .NET Framework Lab",
+              "Computer Networks",
+              "Language-1(BCA sem3)",
+              "Language-2(BCA sem3)",
+              "DEVOPS"
+            ],
+            "Semester 4": [
+              "Python Programming",
+              "Python Programming Lab",
+              "Advanced JAVA and J2EE",
+              "Advanced JAVA and J2EE Lab",
+              "Operating System Concepts",
+              "Language-1(BCA sem4)",
+              "Language-2(BCA sem4)",
+              "Object Oriented Analysis &Design",
+              "Internet Basics"
+            ],
+            "Semester 5": [
+              "Software Engineering",
+              "Computer Architecture",
+              "Internet Technologies (Java EE)",
+              "Internet Technologies Lab",
+              "Elective I: Cloud Computing",
+              "Elective II: Cyber Security",
+              "Mini Project"
+            ],
+            "Semester 6": [
+              "Web Programming (NodeJS/ReactJS)",
+              "Web Programming Lab",
+              "Mobile Application Development",
+              "Mobile Application Development Lab",
+              "Elective III: Machine Learning",
+              "Elective IV: Internet of Things (IoT)",
+              "Major Project & Viva-Voce"
+            ]
+          },
+          "BBA": {
+            "Semester 1": [
+              "Principles of Management",
+              "Financial Accounting",
+              "Microeconomics",
+              "Business Communication",
+              "Quantitative Techniques - I",
+              "Language-1(BBA sem1)",
+              "Language-2(BBA sem1)",
+              "Environmental Studies"
+            ],
+            "Semester 2": [
+              "Organizational Behavior",
+              "Cost Accounting",
+              "Macroeconomics",
+              "Marketing Management",
+              "Quantitative Techniques - II",
+              "Language-1(BBA sem2)",
+              "Language-2(BBA sem2)",
+              "Constitution of India"
+            ],
+            "Semester 3": [
+              "Human Resource Management",
+              "Financial Management",
+              "Business Law",
+              "Corporate Accounting",
+              "Business Analytics",
+              "Language-1(BBA sem3)",
+              "Language-2(BBA sem3)",
+              "Climate Change and Sustainable Development"
+            ],
+            "Semester 4": [
+              "Business Research Methods",
+              "Management Accounting",
+              "Entrepreneurship Development",
+              "Operations Management",
+              "International Business",
+              "Language-1(BBA sem4)",
+              "Language-2(BBA sem4)",
+              "Life Skills"
+            ],
+            "Semester 5": [
+              "Strategic Management",
+              "Income Tax - I",
+              "Banking and Insurance",
+              "Elective I: Consumer Behavior",
+              "Elective II: Investment Management",
+              "Project Work"
+            ],
+            "Semester 6": [
+              "Business Ethics & Corporate Governance",
+              "Income Tax - II",
+              "Management Information Systems",
+              "Elective III: Services Marketing",
+              "Elective IV: Financial Derivatives",
+              "Dissertation & Viva-Voce"
+            ]
+          },
+          "BCom": {
+            "Semester 1": [
+              "Financial Accounting - I",
+              "Business Management & Association",
+              "Managerial Economics",
+              "Marketing Management",
+              "Language-1(BCom sem1)",
+              "Language-2(BCom sem1)",
+              "Digital Fluency",
+              "Environmental Studies"
+            ],
+            "Semester 2": [
+              "Advanced Financial Accounting",
+              "Human Resource Management",
+              "Business Mathematics",
+              "Corporate Law",
+              "Language-1(BCom sem2)",
+              "Language-2(BCom sem2)",
+              "Constitution of India"
+            ],
+            "Semester 3": [
+              "Corporate Accounting - I",
+              "Business Statistics",
+              "Cost Accounting - I",
+              "Financial Education & Investment Awareness",
+              "Language-1(BCom sem3)",
+              "Language-2(BCom sem3)",
+              "Artificial Intelligence for Commerce"
+            ],
+            "Semester 4": [
+              "Corporate Accounting - II",
+              "Cost Accounting - II",
+              "Management Accounting",
+              "Law & Practice of Banking",
+              "Language-1(BCom sem4)",
+              "Language-2(BCom sem4)",
+              "Professional Communication"
+            ],
+            "Semester 5": [
+              "Income Tax - I",
+              "Principles & Practice of Auditing",
+              "GST Law",
+              "Financial Markets & Services",
+              "Elective I: Advanced Corporate Accounting",
+              "Elective II: Financial Management"
+            ],
+            "Semester 6": [
+              "Income Tax - II",
+              "Business Laws",
+              "Management Information Systems",
+              "Consumer Behavior",
+              "Elective III: Advanced Cost Accounting",
+              "Elective IV: Security Analysis & Portfolio Management"
+            ]
+          }
+        };
+
+        courseSelect.addEventListener('change', () => {
+            const courseVal = courseSelect.value;
+            if (courseVal) {
+                semesterSelect.disabled = false;
+                semesterSelect.innerHTML = '<option value="" disabled selected>Select Semester...</option>';
+                const semesters = Object.keys(subjectsData[courseVal]);
+                semesters.forEach(sem => {
+                    const opt = document.createElement('option');
+                    opt.value = sem;
+                    opt.textContent = sem;
+                    semesterSelect.appendChild(opt);
+                });
+                subjectSelect.disabled = true;
+                subjectSelect.innerHTML = '<option value="" disabled selected>Select Semester First...</option>';
+            } else {
+                semesterSelect.disabled = true;
+                semesterSelect.innerHTML = '<option value="" disabled selected>Select Course First...</option>';
+                subjectSelect.disabled = true;
+                subjectSelect.innerHTML = '<option value="" disabled selected>Select Semester First...</option>';
+            }
+        });
+
+        semesterSelect.addEventListener('change', () => {
+            const courseVal = courseSelect.value;
+            const semVal = semesterSelect.value;
+            if (courseVal && semVal) {
+                subjectSelect.disabled = false;
+                subjectSelect.innerHTML = '<option value="" disabled selected>Choose Subject...</option>';
+                const subjects = subjectsData[courseVal][semVal];
+                subjects.forEach(sub => {
+                    const opt = document.createElement('option');
+                    opt.value = sub;
+                    opt.textContent = sub;
+                    subjectSelect.appendChild(opt);
+                });
+            } else {
+                subjectSelect.disabled = true;
+                subjectSelect.innerHTML = '<option value="" disabled selected>Select Semester First...</option>';
+            }
+        });
+
+        // Dynamic backend URL with auto-detection probe
+        let BASE_URL = 'https://adaptiq-backend.onrender.com';
+        
+        const backendDetectionPromise = (async () => {
+            if (window.location.protocol === 'https:') {
+                console.log('ℹ️ Running on HTTPS. Bypassing local HTTP backend check to prevent Mixed Content blocking.');
+                return;
+            }
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 1200); // 1.2s timeout
+                const res = await fetch('http://localhost:5000/api/status', { signal: controller.signal });
+                clearTimeout(timeoutId);
+                const data = await res.json();
+                if (data.server === 'online') {
+                    BASE_URL = 'http://localhost:5000';
+                    console.log('✅ Auto-detected local backend server on port 5000');
+                }
+            } catch (err) {
+                console.log('ℹ️ Local backend not detected. Defaulting to production Render backend.');
+            }
+        })();
+
+        // Pre-warm / Check server status immediately on load
+        async function prewarmBackend() {
+            const loginServerDot = document.getElementById('login-server-status-dot');
+            const loginServerText = document.getElementById('login-server-status');
+            const loginDbDot = document.getElementById('login-db-status-dot');
+            const loginDbText = document.getElementById('login-db-status');
+            
+            if (!loginServerDot || !loginServerText || !loginDbDot || !loginDbText) return;
+            
+            try {
+                await backendDetectionPromise;
+                const res = await fetch(`${BASE_URL}/api/status`);
+                const data = await res.json();
+                
+                if (data.server === 'online') {
+                    loginServerDot.style.backgroundColor = '#00C9A7';
+                    loginServerDot.style.boxShadow = '0 0 8px #00C9A7';
+                    loginServerText.innerText = 'ONLINE';
+                    loginServerText.style.color = '#00C9A7';
+                }
+                
+                if (data.database === 'connected') {
+                    loginDbDot.style.backgroundColor = '#00C9A7';
+                    loginDbDot.style.boxShadow = '0 0 8px #00C9A7';
+                    loginDbText.innerText = 'CONNECTED';
+                    loginDbText.style.color = '#00C9A7';
+                } else {
+                    loginDbDot.style.backgroundColor = '#FF6584';
+                    loginDbDot.style.boxShadow = '0 0 8px #FF6584';
+                    loginDbText.innerText = 'OFFLINE';
+                    loginDbText.style.color = '#FF6584';
+                }
+            } catch (err) {
+                loginServerDot.style.backgroundColor = '#FF6584';
+                loginServerDot.style.boxShadow = '0 0 8px #FF6584';
+                loginServerText.innerText = 'OFFLINE';
+                loginServerText.style.color = '#FF6584';
+                
+                loginDbDot.style.backgroundColor = '#FF6584';
+                loginDbDot.style.boxShadow = '0 0 8px #FF6584';
+                loginDbText.innerText = 'OFFLINE';
+                loginDbText.style.color = '#FF6584';
+                
+                // Retry after 5 seconds to automatically connect when the Render container spins up
+                setTimeout(prewarmBackend, 5000);
+            }
+        }
+        
+        // Run immediately
+        prewarmBackend();
+
+        // --- Authentication (Direct Instant Client-Side Access) ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            
+            loginStatus.textContent = '';
+
+            // Direct instant validation
+            if (user === 'admin' && pass === '1234') {
+                // Set the secure session token so subsequent backend requests are authorized
+                sessionStorage.setItem('admin_token', 'adaptiq-secure-admin-token-2026');
+                loginSection.classList.add('hidden');
+                
+                setTimeout(() => {
+                    dashboardLayout.classList.add('active');
+                    fetchNotes(); // Fetch notes in background
+                    checkStatus(); // Check connection status in background
+                    setInterval(checkStatus, 30000); // Periodic status check
+                }, 400); // Wait for fade out
+            } else {
+                loginStatus.textContent = 'Invalid username or password.';
+            }
+        });
+
+        function logout() {
+            sessionStorage.removeItem('admin_token');
+            dashboardLayout.classList.remove('active');
+            loginForm.reset();
+            loginStatus.textContent = '';
+            setTimeout(() => {
+                loginSection.classList.remove('hidden');
+            }, 400);
+        }
+
+        // --- Upload Logic ---
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            uploadStatus.textContent = 'Uploading...';
+            uploadStatus.className = 'status-msg';
+
+            const subject = document.getElementById('subject').value;
+            const fileInput = document.getElementById('file');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                uploadStatus.textContent = 'Please select a file.';
+                uploadStatus.classList.add('error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('subject', subject);
+            formData.append('file', file);
+
+            try {
+                await backendDetectionPromise;
+                const token = sessionStorage.getItem('admin_token');
+                const response = await fetch(`${BASE_URL}/api/notes/upload`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    uploadStatus.textContent = 'File uploaded successfully!';
+                    uploadStatus.classList.add('success');
+                    uploadForm.reset();
+                    // Reset dropdown states
+                    semesterSelect.disabled = true;
+                    semesterSelect.innerHTML = '<option value="" disabled selected>Select Course First...</option>';
+                    subjectSelect.disabled = true;
+                    subjectSelect.innerHTML = '<option value="" disabled selected>Select Semester First...</option>';
+                    // Refresh manage grid instantly
+                    fetchNotes();
+                } else {
+                    uploadStatus.textContent = data.error || 'Failed to upload file.';
+                    uploadStatus.classList.add('error');
+                }
+            } catch (error) {
+                console.error(error);
+                uploadStatus.textContent = 'Server error. Make sure the backend is running.';
+                uploadStatus.classList.add('error');
+            }
+        });
+
+        async function checkStatus() {
+            const serverEl = document.getElementById('server-status');
+            const dbEl = document.getElementById('db-status');
+            const sidebarServerEl = document.getElementById('sidebar-server-status');
+            const sidebarDbEl = document.getElementById('sidebar-db-status');
+            
+            try {
+                await backendDetectionPromise;
+                const res = await fetch(`${BASE_URL}/api/status`);
+                const data = await res.json();
+                
+                if (data.server === 'online') {
+                    if (serverEl) {
+                        serverEl.innerText = 'ONLINE';
+                        serverEl.style.color = '#00C9A7';
+                    }
+                    if (sidebarServerEl) {
+                        sidebarServerEl.innerText = 'ONLINE';
+                        sidebarServerEl.style.color = '#00C9A7';
+                    }
+                }
+                
+                if (data.database === 'connected') {
+                    if (dbEl) {
+                        dbEl.innerText = 'CONNECTED';
+                        dbEl.style.color = '#00C9A7';
+                    }
+                    if (sidebarDbEl) {
+                        sidebarDbEl.innerText = 'CONNECTED';
+                        sidebarDbEl.style.color = '#00C9A7';
+                    }
+                } else {
+                    if (dbEl) {
+                        dbEl.innerText = 'OFFLINE';
+                        dbEl.style.color = '#FF6584';
+                    }
+                    if (sidebarDbEl) {
+                        sidebarDbEl.innerText = 'OFFLINE';
+                        sidebarDbEl.style.color = '#FF6584';
+                    }
+                }
+            } catch (err) {
+                if (serverEl) {
+                    serverEl.innerText = 'OFFLINE';
+                    serverEl.style.color = '#FF6584';
+                }
+                if (sidebarServerEl) {
+                    sidebarServerEl.innerText = 'OFFLINE';
+                    sidebarServerEl.style.color = '#FF6584';
+                }
+                if (dbEl) {
+                    dbEl.innerText = 'OFFLINE';
+                    dbEl.style.color = '#FF6584';
+                }
+                if (sidebarDbEl) {
+                    sidebarDbEl.innerText = 'OFFLINE';
+                    sidebarDbEl.style.color = '#FF6584';
+                }
+            }
+        }
+
+        // --- Manage Notes Logic ---
+        let currentNotes = [];
+        let editingNoteId = null;
+
+        async function fetchNotes() {
+            try {
+                await backendDetectionPromise;
+                const response = await fetch(`${BASE_URL}/api/notes`);
+                currentNotes = await response.json();
+                renderNotes();
+            } catch (error) {
+                document.getElementById('loading').innerHTML = '<span style="color:#FF6584">Failed to connect to backend. Ensure server is running.</span>';
+                console.error(error);
+            }
+        }
+
+        function getCourseAndSemester(subjectName) {
+            for (const [course, semesters] of Object.entries(subjectsData)) {
+                for (const [semester, subjects] of Object.entries(semesters)) {
+                    if (subjects.includes(subjectName)) {
+                        return { course, semester };
+                    }
+                }
+            }
+            return { course: "Other", semester: "General" };
+        }
+
+        function renderNotes() {
+            const container = document.getElementById('notes-container');
+            const loading = document.getElementById('loading');
+            loading.style.display = 'none';
+
+            if (currentNotes.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray);">No notes uploaded yet in database.</p>';
+                return;
+            }
+
+            const filterCourse = document.getElementById('filter-course').value;
+            const filterSemester = document.getElementById('filter-semester').value;
+
+            // Group notes and filter
+            const groups = {};
+
+            currentNotes.forEach(note => {
+                const info = getCourseAndSemester(note.subject);
+                
+                // Filter checks
+                if (filterCourse !== 'ALL' && info.course !== filterCourse) return;
+                if (filterSemester !== 'ALL' && info.semester !== filterSemester) return;
+
+                const groupKey = `${info.course} — ${info.semester}`;
+                if (!groups[groupKey]) {
+                    groups[groupKey] = [];
+                }
+                groups[groupKey].push(note);
+            });
+
+            const keys = Object.keys(groups).sort();
+            if (keys.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray);">No notes match the selected filters.</p>';
+                return;
+            }
+
+            container.innerHTML = keys.map(groupKey => {
+                const notes = groups[groupKey];
+                const cardsHtml = notes.map(note => `
+                    <div class="note-card">
+                         <div class="note-subject">${note.subject}</div>
+                         <div class="note-name">${note.fileName}</div>
+                         <div style="font-size: 0.8rem; color: var(--gray);">Uploaded: ${new Date(note.uploadedAt).toLocaleDateString()}</div>
+                         <div class="note-actions">
+                             <button class="btn-action btn-edit" onclick="openEditModal('${note._id}')">Edit</button>
+                             <button class="btn-action btn-delete" onclick="deleteNote('${note._id}')">Delete</button>
+                         </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div style="margin-bottom: 2.5rem;">
+                        <h2 style="font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 800; color: var(--dark); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                            <span style="background: var(--purple); color: #fff; width: 6px; height: 16px; border-radius: 4px; display: inline-block;"></span>
+                            ${groupKey}
+                        </h2>
+                        <div class="notes-grid">${cardsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Attach listeners for dynamic filtering
+        document.getElementById('filter-course').addEventListener('change', renderNotes);
+        document.getElementById('filter-semester').addEventListener('change', renderNotes);
+
+
+        async function deleteNote(id) {
+            if (!confirm('Are you sure you want to permanently delete this note and its file?')) return;
+            
+            try {
+                await backendDetectionPromise;
+                const token = sessionStorage.getItem('admin_token');
+                const response = await fetch(`${BASE_URL}/api/notes/${id}`, { 
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    currentNotes = currentNotes.filter(n => n._id !== id);
+                    renderNotes();
+                } else {
+                    alert('Failed to delete note.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Server error while deleting.');
+            }
+        }
+
+        function openEditModal(id) {
+            const note = currentNotes.find(n => n._id === id);
+            if (!note) return;
+            editingNoteId = id;
+            document.getElementById('edit-subject').value = note.subject;
+            document.getElementById('edit-filename').value = note.fileName;
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+            editingNoteId = null;
+        }
+
+        async function saveNote() {
+            if (!editingNoteId) return;
+            const subject = document.getElementById('edit-subject').value;
+            const fileName = document.getElementById('edit-filename').value;
+
+            try {
+                await backendDetectionPromise;
+                const token = sessionStorage.getItem('admin_token');
+                const response = await fetch(`${BASE_URL}/api/notes/${editingNoteId}`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ subject, fileName })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const index = currentNotes.findIndex(n => n._id === editingNoteId);
+                    if (index !== -1) {
+                        currentNotes[index] = data.note;
+                        renderNotes();
+                    }
+                    closeModal();
+                } else {
+                    alert('Failed to update note.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Server error while updating.');
+            }
+        }
+    </script>
+</body>
+</html>

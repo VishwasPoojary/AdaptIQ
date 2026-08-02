@@ -1,0 +1,282 @@
+/* ACADEMIC DESIGN SYSTEM - AdaptIQ Scholarly Theme */
+
+/* ===== CSS VARIABLES ===== */
+:root {
+  --navy: #1e3a8a;
+  --navy-dark: #1e2a5f;
+  --slate: #64748b;
+  --slate-light: #94a3b8;
+  --cream: #fefce8;
+  --white: #ffffff;
+  --gray-100: #f8fafc;
+  --gray-200: #e2e8f0;
+  --gray-800: #1e293b;
+  
+  /* Typography */
+  --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: Georgia, 'Times New Roman', Cambria, serif;
+  --font-mono: 'Courier New', Consolas, monospace;
+  
+  /* Layout */
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+  
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  
+  /* Borders */
+  --border: 1px solid var(--gray-200);
+  --border-focus: 2px solid var(--navy);
+  
+  /* Transitions */
+  --transition: all 0.2s ease-in-out;
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; line-height: 1.7; }
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--gray-800);
+  background: var(--cream);
+}
+
+/* ===== TYPOGRAPHY ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+}
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+p { margin-bottom: var(--space-md); text-align: justify; }
+a { color: var(--navy); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ===== LAYOUT ===== */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-md); }
+.section { padding: var(--space-xl) 0; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--navy);
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+.btn:hover { background: var(--navy); color: var(--white); }
+.btn-primary { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.btn-primary:hover { background: var(--navy-dark); }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+.card-title { margin-bottom: var(--space-md); }
+
+/* ===== FORMS ===== */
+.form-group { margin-bottom: var(--space-lg); }
+.form-group label {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-weight: 500;
+  color: var(--gray-800);
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(30,58,138,0.1);
+}
+
+/* ===== TABLES ===== */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-lg) 0;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.table th,
+.table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: var(--border);
+}
+.table th { background: var(--gray-100); font-weight: 500; }
+.table tr:hover { background: var(--gray-100); }
+
+/* ===== NAVBAR ===== */
+.navbar {
+  background: var(--white);
+  border-bottom: var(--border);
+  box-shadow: var(--shadow-sm);
+  position: sticky; top: 0; z-index: 100;
+}
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) 0;
+}
+.logo { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 400; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  background: var(--white);
+  border-right: var(--border);
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  padding: var(--space-lg);
+}
+.sidebar-nav { list-style: none; }
+.sidebar-nav a {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: var(--slate);
+  border-radius: var(--radius);
+  margin-bottom: 0.25rem;
+}
+.sidebar-nav a:hover,
+.sidebar-nav a.active { background: var(--gray-100); color: var(--navy); }
+
+/* ===== PROGRESS BAR ===== */
+.progress-container { background: var(--gray-200); border-radius: 999px; height: 8px; overflow: hidden; margin: var(--space-sm) 0; }
+.progress-bar { height: 100%; background: var(--navy); transition: width 0.5s ease; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  h1 { font-size: 2rem; }
+  .container { padding: 0 var(--space-sm); }
+}
+
+/* ===== UTILITIES ===== */
+.text-center { text-align: center; }
+.mb-0 { margin-bottom: 0; }
+.hidden { display: none; }
+
+/* Academic Elements */
+.academic-badge {
+  display: inline-block;
+  background: var(--navy);
+  color: var(--white);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+/* ===== MOBILE OPTIMIZATIONS ===== */
+
+/* 1. Prevent horizontal overflow from tables */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: var(--space-lg);
+}
+
+/* 2. Fix justified text on small screens (prevents huge gaps) */
+@media (max-width: 600px) {
+  p { text-align: left; }
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.5rem; }
+}
+
+/* 3. Mobile Navigation Menu */
+.menu-toggle { display: none; }
+.hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: var(--navy); }
+
+@media (max-width: 768px) {
+  .hamburger { display: block; }
+  
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--white);
+    flex-direction: column;
+    gap: 0 !important;
+    border-bottom: var(--border);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+    padding: 0;
+  }
+
+  .nav-links li {
+    width: 100%;
+    text-align: center;
+    border-top: var(--border);
+  }
+
+  .nav-links li a {
+    display: block;
+    padding: 1rem;
+  }
+
+  /* Show menu when checkbox is checked */
+  .menu-toggle:checked ~ .nav-links {
+    max-height: 300px;
+    padding-bottom: 1rem;
+  }
+
+  /* Handle CTA buttons in nav */
+  .desktop-cta { display: none; }
+  .mobile-cta { 
+    margin: 0.5rem var(--space-md); 
+    display: inline-block !important; 
+  }
+
+  /* Hero adjustments */
+  .hero-academic { padding: var(--space-lg) 0; }
+  .hero-academic .btn { width: 100%; } /* Stack buttons on mobile */
+}
+
+/* 4. Table Styling for Mobile */
+@media (max-width: 480px) {
+  .table { font-size: 0.85rem; }
+  .table th, .table td { padding: 0.75rem 0.5rem; }
+}

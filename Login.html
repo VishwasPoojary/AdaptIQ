@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | AdaptIQ</title>
+
+  <link rel="stylesheet" href="Login.css?v=1.0.2">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&family=DM+Sans&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* Auth toggle tabs */
+    .auth-tabs {
+      display: flex;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50px;
+      padding: 4px;
+      margin-bottom: 1.8rem;
+      gap: 4px;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 0.55rem 1rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+    }
+    .auth-tab.active {
+      background: #fff;
+      color: #6C63FF;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+
+    /* Error / success message */
+    .auth-msg {
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.7rem 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      display: none;
+      text-align: center;
+    }
+    .auth-msg.error  { background: rgba(255,101,132,0.15); color: #FF6584; display: block; }
+    .auth-msg.success{ background: rgba(0,201,167,0.15);  color: #00C9A7; display: block; }
+
+    /* Name field (only shown on register) */
+    #name-group { display: none; }
+
+    /* Switch link */
+    .switch-link {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.7);
+    }
+    .switch-link a {
+      color: #fff;
+      font-weight: 700;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="main-container">
+    <div class="card">
+      <div class="left-panel">
+
+        <!-- Header changes based on mode -->
+        <div class="header">
+          <h1 id="auth-title">Welcome Back</h1>
+          <p id="auth-subtitle">Sign in to your AdaptIQ account.</p>
+        </div>
+
+        <!-- Mode Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login"    onclick="switchMode('login')">Login</button>
+          <button class="auth-tab"        id="tab-register" onclick="switchMode('register')">Create Account</button>
+        </div>
+
+        <!-- Error / Success Message -->
+        <div class="auth-msg" id="auth-msg"></div>
+
+        <!-- FORM -->
+        <form class="signup-form" id="auth-form" onsubmit="handleSubmit(event)">
+
+          <!-- Name (register only) -->
+          <div class="input-group" id="name-group">
+            <label>Full Name</label>
+            <input type="text" id="input-name" placeholder="eg. Rynal Dsouza">
+          </div>
+
+          <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="input-email" placeholder="eg.name@gmail.com" required>
+          </div>
+
+          <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="input-password" placeholder="Min. 6 characters" required>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submit-btn">Log In</button>
+        </form>
+
+        <div class="divider"><span>or</span></div>
+
+        <!-- GOOGLE LOGIN -->
+        <div class="social-login-solo">
+          <button type="button" class="social-btn google-btn" onclick="signInWithGoogle()">
+            <i class="fa-brands fa-google"></i>
+            Continue with Google
+          </button>
+        </div>
+
+        <!-- Switch mode link -->
+        <div class="switch-link" id="switch-link">
+          Don't have an account? <a onclick="switchMode('register')">Create one</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script>
+    // ── Firebase Config ──────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyCOvhichhN6LqA1w8ZNg9bwdHrRRKyiWxE",
+      authDomain: "adaptiq-64d2d.firebaseapp.com",
+      projectId: "adaptiq-64d2d",
+      storageBucket: "adaptiq-64d2d.firebasestorage.app",
+      messagingSenderId: "1005881754058",
+      appId: "1:1005881754058:web:40f5677d68f6139ff6cf33",
+      measurementId: "G-SB1EFL5982"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const db = firebase.firestore();
+
+    // ── Mode: 'login' | 'register' ───────────────────────────
+    let currentMode = 'login';
+
+    function switchMode(mode) {
+      currentMode = mode;
+      clearMsg();
+
+      const isRegister = mode === 'register';
+
+      // Tab active state
+      document.getElementById('tab-login').classList.toggle('active', !isRegister);
+      document.getElementById('tab-register').classList.toggle('active', isRegister);
+
+      // Header text
+      document.getElementById('auth-title').textContent    = isRegister ? 'Create an Account' : 'Welcome Back';
+      document.getElementById('auth-subtitle').textContent = isRegister
+        ? 'Join AdaptIQ and start your learning journey.'
+        : 'Sign in to your AdaptIQ account.';
+
+      // Show/hide name field
+      document.getElementById('name-group').style.display = isRegister ? 'block' : 'none';
+      document.getElementById('input-name').required       = isRegister;
+
+      // Button text
+      document.getElementById('submit-btn').textContent = isRegister ? 'Create Account' : 'Log In';
+
+      // Switch link text
+      document.getElementById('switch-link').innerHTML = isRegister
+        ? `Already have an account? <a onclick="switchMode('login')">Sign in</a>`
+        : `Don't have an account? <a onclick="switchMode('register')">Create one</a>`;
+    }
+
+    // ── Show Message ─────────────────────────────────────────
+    function showMsg(text, type = 'error') {
+      const el = document.getElementById('auth-msg');
+      el.textContent = text;
+      el.className = `auth-msg ${type}`;
+    }
+
+    function clearMsg() {
+      const el = document.getElementById('auth-msg');
+      el.textContent = '';
+      el.className = 'auth-msg';
+    }
+
+    // ── Friendly Firebase error messages ─────────────────────
+    function friendlyError(code) {
+      const map = {
+        'auth/user-not-found':      'No account found with this email.',
+        'auth/wrong-password':      'Incorrect password. Please try again.',
+        'auth/email-already-in-use':'An account with this email already exists.',
+        'auth/weak-password':       'Password must be at least 6 characters.',
+        'auth/invalid-email':       'Please enter a valid email address.',
+        'auth/too-many-requests':   'Too many attempts. Try again later.',
+        'auth/popup-closed-by-user':'Google sign-in was cancelled.',
+        'auth/invalid-credential':  'Incorrect email or password.',
+      };
+      return map[code] || 'Something went wrong. Please try again.';
+    }
+
+    // ── Handle Form Submit ────────────────────────────────────
+    async function handleSubmit(e) {
+      e.preventDefault();
+      clearMsg();
+
+      const email    = document.getElementById('input-email').value.trim();
+      const password = document.getElementById('input-password').value;
+      const name     = document.getElementById('input-name').value.trim();
+      const btn      = document.getElementById('submit-btn');
+
+      btn.disabled   = true;
+      btn.textContent = currentMode === 'login' ? 'Signing in...' : 'Creating account...';
+
+      try {
+        if (currentMode === 'login') {
+          // ── EMAIL / PASSWORD LOGIN ──
+          await auth.signInWithEmailAndPassword(email, password);
+          localStorage.setItem('firebase_user_active', 'true');
+          showMsg('Login successful! Redirecting...', 'success');
+          setTimeout(() => window.location.replace('indexx.html'), 800);
+
+        } else {
+          // ── CREATE ACCOUNT ──
+          const result = await auth.createUserWithEmailAndPassword(email, password);
+          const user   = result.user;
+
+          // Update display name
+          await user.updateProfile({ displayName: name || email.split('@')[0] });
+
+          // Save to Firestore
+          await db.collection('users').doc(user.uid).set({
+            name:      name || email.split('@')[0],
+            email:     user.email,
+            photo:     null,
+            createdAt: new Date()
+          });
+
+          localStorage.setItem('firebase_user_active', 'true');
+          showMsg('Account created! Redirecting...', 'success');
+          setTimeout(() => window.location.replace('indexx.html'), 800);
+        }
+
+      } catch (err) {
+        showMsg(friendlyError(err.code));
+        btn.disabled = false;
+        btn.textContent = currentMode === 'login' ? 'Log In' : 'Create Account';
+      }
+    }
+
+    // ── Google Sign-In ────────────────────────────────────────
+    function signInWithGoogle() {
+      clearMsg();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          const user = result.user;
+          return db.collection('users').doc(user.uid).set({
+            name:      user.displayName,
+            email:     user.email,
+            photo:     user.photoURL,
+            lastLogin: new Date()
+          }, { merge: true }).then(() => user);
+        })
+        .then((user) => {
+          localStorage.setItem('firebase_user_active', 'true');
+          showMsg('Signed in with Google! Redirecting...', 'success');
+          setTimeout(() => window.location.replace('indexx.html'), 800);
+        })
+        .catch((err) => {
+          showMsg(friendlyError(err.code));
+        });
+    }
+
+    // ── Auto-redirect if already logged in ───────────────────
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        localStorage.setItem('firebase_user_active', 'true');
+        window.location.replace('indexx.html');
+      }
+    });
+  </script>
+
+</body>
+
+</html>
